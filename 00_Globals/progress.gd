@@ -227,6 +227,38 @@ static func save_draft(prompt_id: String, content: String) -> void:
 	progress["draft"] = {"prompt_id": prompt_id, "content": content}
 	save_progress(progress)
 
+# ¿Ha completado el aprendiz el tutorial inicial?
+static func is_tutorial_completed(progress: Dictionary = {}) -> bool:
+	if progress.is_empty():
+		progress = load_progress()
+	return bool(progress.get("tutorial_completed", false))
+
+# Devuelve el paso actual del tutorial ("intro", "stoa", "gym", "home", "completed").
+static func get_tutorial_step(progress: Dictionary = {}) -> String:
+	if progress.is_empty():
+		progress = load_progress()
+	return str(progress.get("tutorial_step", "intro"))
+
+# Avanza el tutorial al siguiente paso y persiste los cambios.
+static func advance_tutorial_step(next_step: String) -> Dictionary:
+	var progress := load_progress()
+	progress["tutorial_step"] = next_step
+	if next_step == "completed":
+		progress["tutorial_completed"] = true
+	save_progress(progress)
+	return progress
+
+# Marca el tutorial como completado y entrega la base de virtudes iniciales.
+static func complete_tutorial() -> Dictionary:
+	var progress := load_progress()
+	progress["tutorial_step"] = "completed"
+	progress["tutorial_completed"] = true
+	for virtue: String in DEFAULT_VIRTUES.keys():
+		if int(progress["virtues"].get(virtue, 0)) == 0:
+			_add_virtue_points(progress, virtue, 5)
+	save_progress(progress)
+	return progress
+
 # Suma puntos a una virtud sin pasar de su tope.
 static func _add_virtue_points(progress: Dictionary, virtue: String, points: int) -> void:
 	var virtues: Dictionary = progress["virtues"]
@@ -243,6 +275,8 @@ static func _default_progress() -> Dictionary:
 		"current_streak": 0,
 		"last_visit": "",
 		"draft": {"prompt_id": "", "content": ""},
+		"tutorial_step": "intro",
+		"tutorial_completed": false,
 	}
 
 # Completa los datos leídos con las claves que falten, para que una partida
@@ -266,6 +300,10 @@ static func _merge_defaults(data: Dictionary) -> Dictionary:
 		progress["minigames"] = {}
 	if not (progress["draft"] is Dictionary):
 		progress["draft"] = {"prompt_id": "", "content": ""}
+	if not data.has("tutorial_step"):
+		progress["tutorial_step"] = "intro"
+	if not data.has("tutorial_completed"):
+		progress["tutorial_completed"] = false
 
 	return progress
 

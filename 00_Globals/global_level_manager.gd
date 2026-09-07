@@ -4,6 +4,8 @@ var current_tilemap_bounds: Array[Vector2]
 var playground: Playground
 
 signal TileMapBoundsChanged(bounds: Array[Vector2])
+signal dungeon_entered(dungeon: Node2D)
+signal dungeon_exited
 
 func change_tilemap_bounds(bounds: Array[Vector2]) -> void:
 	current_tilemap_bounds = bounds
@@ -25,11 +27,14 @@ func enter_dungeon(new_dungeon: Node2D) -> void:
 				new_dungeon.global_position = apprentice.global_position
 
 		playground.current_dungeon = new_dungeon
+		dungeon_entered.emit(new_dungeon)
 
 func exit_dungeon() -> void:
 	if playground.current_dungeon:
+		var exited_dungeon = playground.current_dungeon
 		playground.remove_child(playground.current_dungeon)
 		playground.current_dungeon = null
+		dungeon_exited.emit()
 
 func in_dungeon() -> bool:
 	return playground != null and playground.current_dungeon != null

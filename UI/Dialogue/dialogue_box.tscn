@@ -1,0 +1,145 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://UI/Dialogue/dialogue_box.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Zeno/Sprites/frame_000.png" id="2_portrait"]
+[ext_resource type="FontFile" uid="uid://db2wpsf0pky2f" path="res://assets/Fonts/Inter-VariableFont_opsz,wght.ttf" id="3_font"]
+
+[sub_resource type="FontVariation" id="FontBold"]
+base_font = ExtResource("3_font")
+variation_opentype = {
+2003265652: 700
+}
+
+[sub_resource type="StyleBoxFlat" id="DialoguePanelStyle"]
+bg_color = Color(0.960784, 0.945098, 0.917647, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.545098, 0.45098, 0.333333, 0.85)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.25)
+shadow_size = 8
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="PortraitFrameStyle"]
+bg_color = Color(0.88, 0.84, 0.78, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.545098, 0.45098, 0.333333, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxEmpty" id="EmptyStyle"]
+
+[node name="DialogueBox" type="CanvasLayer"]
+layer = 110
+script = ExtResource("1_script")
+
+[node name="RootControl" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackdropButton" type="Button" parent="RootControl"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/focus = SubResource("EmptyStyle")
+theme_override_styles/disabled = SubResource("EmptyStyle")
+theme_override_styles/hover = SubResource("EmptyStyle")
+theme_override_styles/pressed = SubResource("EmptyStyle")
+theme_override_styles/normal = SubResource("EmptyStyle")
+flat = true
+
+[node name="BottomContainer" type="MarginContainer" parent="RootControl"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -170.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="Panel" type="PanelContainer" parent="RootControl/BottomContainer"]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+theme_override_styles/panel = SubResource("DialoguePanelStyle")
+
+[node name="InnerMargin" type="MarginContainer" parent="RootControl/BottomContainer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="HBox" type="HBoxContainer" parent="RootControl/BottomContainer/Panel/InnerMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="PortraitFrame" type="PanelContainer" parent="RootControl/BottomContainer/Panel/InnerMargin/HBox"]
+custom_minimum_size = Vector2(76, 76)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("PortraitFrameStyle")
+
+[node name="PortraitRect" type="TextureRect" parent="RootControl/BottomContainer/Panel/InnerMargin/HBox/PortraitFrame"]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 2
+texture = ExtResource("2_portrait")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ContentVBox" type="VBoxContainer" parent="RootControl/BottomContainer/Panel/InnerMargin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="SpeakerLabel" type="Label" parent="RootControl/BottomContainer/Panel/InnerMargin/HBox/ContentVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48, 0.32, 0.12, 1)
+theme_override_fonts/font = SubResource("FontBold")
+theme_override_font_sizes/font_size = 17
+text = "Zenón de Citio"
+
+[node name="TextLabel" type="RichTextLabel" parent="RootControl/BottomContainer/Panel/InnerMargin/HBox/ContentVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.18, 0.15, 0.12, 1)
+theme_override_fonts/normal_font = ExtResource("3_font")
+theme_override_font_sizes/normal_font_size = 15
+bbcode_enabled = true
+text = "Bienvenido a Atenas, aprendiz."
+scroll_active = false
+
+[node name="PromptIndicator" type="Label" parent="RootControl/BottomContainer/Panel/InnerMargin/HBox/ContentVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.545098, 0.45098, 0.333333, 0.8)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 11
+text = "▼ Toca para continuar"
+horizontal_alignment = 2
