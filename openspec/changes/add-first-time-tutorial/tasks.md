@@ -10,7 +10,8 @@
 
 ## 3. Tutorial Coordinator & Tour Integration
 
-- [ ] 3.1 Create `TutorialGuide` coordinator in Athens / Playground to monitor player state, manage Zeno's dialogue script, and handle step transitions.
-- [ ] 3.2 Add visual guide indicators / markers over the active destination building during each tutorial stage.
-- [ ] 3.3 Hook tutorial entry events into Stoa, Gym, and Home scenes to trigger contextual dialogues upon arrival.
-- [ ] 3.4 Implement tutorial completion logic, grant starter virtue baseline, set `tutorial_completed = true`, and verify smooth transition to free roam mode.
+- [x] 3.1 Create `TutorialGuide` coordinator in Athens / Playground to monitor player state, manage Zeno's dialogue script, and handle step transitions.
+- [x] 3.2 Add visual guide indicators / markers over the active destination building during each tutorial stage.
+- [x] 3.3 Hook tutorial entry events into Stoa, Gym, and Home scenes to trigger contextual dialogues upon arrival.
+- [x] 3.4 Implement tutorial completion logic, grant starter virtue baseline, set `tutorial_completed = true`, and verify smooth transition to free roam mode.
+

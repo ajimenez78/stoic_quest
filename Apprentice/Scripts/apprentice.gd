@@ -49,6 +49,9 @@ func _update_touch_controls() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if LevelManager.in_dungeon():
 		return
+	
+	if LevelManager.playground and LevelManager.playground.tutorial_guide and LevelManager.playground.tutorial_guide.is_dialogue_active():
+		return
 		
 	# Capturar click o toque en la pantalla que no haya sido consumido por la UI
 	if event is InputEventMouseButton:
@@ -64,10 +67,22 @@ func _process(delta: float) -> void:
 	if !LevelManager.in_dungeon():
 		if dungeon_entered: dungeon_entered = false
 
-		# Leer controles físicos o Joystick virtual
 		var input_dir := Vector2.ZERO
-		input_dir.x = Input.get_action_strength("right") - Input.get_action_strength("left")
-		input_dir.y = Input.get_action_strength("down") - Input.get_action_strength("up")
+		var is_dialogue := false
+		if LevelManager.playground and LevelManager.playground.tutorial_guide:
+			is_dialogue = LevelManager.playground.tutorial_guide.is_dialogue_active()
+
+		if is_dialogue:
+			is_moving_to_target = false
+			_last_positions.clear()
+			direction = Vector2.ZERO
+			velocity = Vector2.ZERO
+		else:
+			# Leer controles físicos o Joystick virtual
+			input_dir.x = Input.get_action_strength("right") - Input.get_action_strength("left")
+			input_dir.y = Input.get_action_strength("down") - Input.get_action_strength("up")
+
+
 		
 		if input_dir.length_squared() > 0.05:
 			# Si se detecta entrada manual del joystick o teclado, se cancela el Tap-to-Move de inmediato

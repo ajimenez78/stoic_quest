@@ -31,7 +31,7 @@ func enter_dungeon(new_dungeon: Node2D) -> void:
 
 func exit_dungeon() -> void:
 	if playground.current_dungeon:
-		var exited_dungeon = playground.current_dungeon
+		var _exited_dungeon = playground.current_dungeon
 		playground.remove_child(playground.current_dungeon)
 		playground.current_dungeon = null
 		dungeon_exited.emit()

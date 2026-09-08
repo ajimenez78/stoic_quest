@@ -30,7 +30,7 @@ func _ready() -> void:
 	if backdrop_button:
 		backdrop_button.pressed.connect(_on_backdrop_pressed)
 	
-	_cache_base_font_sizes(root_control if root_control else self)
+	_cache_base_font_sizes(root_control as Node if root_control else self as Node)
 	_apply_font_scale()
 	
 	hide_dialogue()

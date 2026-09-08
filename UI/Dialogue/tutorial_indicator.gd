@@ -1,8 +1,9 @@
 # Indicador visual flotante que señala el edificio de destino durante el tutorial.
 class_name TutorialIndicator extends Node2D
 
-@onready var label: Label = $Container/Label
+@onready var label: Label = $Container/Panel/Margin/Label
 @onready var arrow: Label = $Container/Arrow
+
 @onready var container: Node2D = $Container
 
 var _base_y: float = 0.0

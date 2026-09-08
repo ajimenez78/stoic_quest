@@ -163,9 +163,9 @@ func _get_building_node(building_name: String) -> Node2D:
 	if not playground or not playground.current_level:
 		return null
 	
-	var athens := playground.current_level
+	var athensLevel := playground.current_level
 	var name_lower := building_name.to_lower()
-	for child in athens.get_children():
+	for child in athensLevel.get_children():
 		if child.name.to_lower() == name_lower:
 			return child as Node2D
 	return null
