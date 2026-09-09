@@ -12,12 +12,10 @@ var dialogue_box: DialogueBox
 var indicator: TutorialIndicator
 var playground: Playground
 
+var path_indicator: TutorialIndicator
+
 const DIALOGUES = {
-	"intro": [
-		"¡Bienvenido a Atenas, joven aprendiz! Soy Zenón de Citio. Estás a punto de iniciar tu camino en la filosofía estoica.",
-		"Para cultivar el carácter y alcanzar la serenidad (ataraxia), debemos entrenar la mente día a día a través de cuatro grandes virtudes.",
-		"Acompáñame en una breve peregrinación por nuestra polis. Primero, dirígete hacia el este, hacia [b]La Stoa[/b], el pórtico donde nos reunimos a filosofar."
-	],
+	"intro": [],
 	"stoa": [
 		"Este es el pórtico pintado, la Stoa Poikile. Aquí contemplamos el orden del cosmos y discernimos lo que está bajo nuestro control.",
 		"La [b]Sabiduría[/b] (Prudencia) es el arte de distinguir lo bueno, lo indiferente y lo perjudicial, guiando cada uno de nuestros juicios con la razón.",
@@ -49,6 +47,26 @@ func _ready() -> void:
 	# Iniciar el tutorial si es la primera vez
 	call_deferred("_check_initial_state")
 
+func _process(_delta: float) -> void:
+	if ProgressStore.is_tutorial_completed() or LevelManager.in_dungeon() or is_dialogue_active():
+		if path_indicator:
+			path_indicator.hide()
+		return
+	_update_path_indicator()
+
+func _get_intro_dialogue() -> Array:
+	var lines := [
+		"¡Bienvenido a Atenas, joven aprendiz! Soy Zenón de Citio. Estás a punto de iniciar tu camino en la filosofía estoica.",
+		"Para cultivar el carácter y alcanzar la serenidad (ataraxia), debemos entrenar la mente día a día a través de cuatro grandes virtudes."
+	]
+	var is_touchscreen := OS.has_feature("mobile") or DisplayServer.is_touchscreen_available()
+	if is_touchscreen:
+		lines.append("Para moverte por Atenas, puedes [b]tocar cualquier punto del terreno[/b] ('tap-to-move') o utilizar el [b]joystick virtual[/b] en la pantalla.")
+	else:
+		lines.append("Para moverte por Atenas, puedes [b]hacer clic en el terreno[/b] ('click-to-move'), usar el [b]teclado[/b] (WASD / Flechas), el [b]joystick virtual[/b] o un [b]mando[/b].")
+	lines.append("Acompáñame en una breve peregrinación por nuestra polis. Primero, dirígete hacia el este, hacia [b]La Stoa[/b], el pórtico donde nos reunimos a filosofar.")
+	return lines
+
 func _setup_nodes() -> void:
 	if not dialogue_box and dialogue_box_scene:
 		dialogue_box = dialogue_box_scene.instantiate()
@@ -63,6 +81,13 @@ func _setup_nodes() -> void:
 		else:
 			add_child(indicator)
 
+	if not path_indicator and indicator_scene:
+		path_indicator = indicator_scene.instantiate()
+		if playground and playground.current_level:
+			playground.current_level.add_child(path_indicator)
+		else:
+			add_child(path_indicator)
+
 func _check_initial_state() -> void:
 	if ProgressStore.is_tutorial_completed():
 		_cleanup_tutorial()
@@ -73,12 +98,14 @@ func _check_initial_state() -> void:
 		tutorial_started.emit()
 		_active_step_at_dialogue = "intro"
 		if dialogue_box:
-			dialogue_box.start_dialogue(DIALOGUES["intro"])
+			dialogue_box.start_dialogue(_get_intro_dialogue())
 	else:
 		_update_indicator_for_step(step)
 
 func _on_dialogue_started() -> void:
 	_stop_apprentice()
+	if path_indicator:
+		path_indicator.hide()
 
 func _on_dialogue_finished() -> void:
 	_resume_apprentice()
@@ -104,6 +131,8 @@ func _on_dungeon_entered(dungeon: Node2D) -> void:
 	
 	if indicator:
 		indicator.hide()
+	if path_indicator:
+		path_indicator.hide()
 	
 	var current_step := ProgressStore.get_tutorial_step()
 	var d_name := dungeon.name.to_lower()
@@ -138,7 +167,20 @@ func _update_indicator_for_step(step: String) -> void:
 	if LevelManager.in_dungeon():
 		indicator.hide()
 		return
-	
+
+	if not playground:
+		playground = LevelManager.playground
+
+	if indicator and playground and playground.current_level and indicator.get_parent() != playground.current_level:
+		if indicator.get_parent():
+			indicator.get_parent().remove_child(indicator)
+		playground.current_level.add_child(indicator)
+
+	if path_indicator and playground and playground.current_level and path_indicator.get_parent() != playground.current_level:
+		if path_indicator.get_parent():
+			path_indicator.get_parent().remove_child(path_indicator)
+		playground.current_level.add_child(path_indicator)
+
 	var target_node: Node2D = null
 	var target_title := ""
 	
@@ -156,6 +198,68 @@ func _update_indicator_for_step(step: String) -> void:
 		indicator.set_destination(target_title, target_node.global_position)
 	else:
 		indicator.hide()
+
+func _update_path_indicator() -> void:
+	if not path_indicator or ProgressStore.is_tutorial_completed() or LevelManager.in_dungeon() or is_dialogue_active():
+		if path_indicator:
+			path_indicator.hide()
+		return
+
+	if not playground:
+		playground = LevelManager.playground
+	if not playground or not playground.current_level or not playground.apprentice:
+		path_indicator.hide()
+		return
+
+	var step := ProgressStore.get_tutorial_step()
+	var target_building_name := ""
+	if step == "stoa" or step == "intro":
+		target_building_name = "Stoa"
+	elif step == "gym":
+		target_building_name = "Gym"
+	elif step == "home":
+		target_building_name = "Home"
+
+	var target_node := _get_building_node(target_building_name)
+	if not target_node:
+		path_indicator.hide()
+		return
+
+	var apprentice_pos: Vector2 = playground.apprentice.global_position
+	var target_pos: Vector2 = target_node.global_position
+
+	if apprentice_pos.distance_to(target_pos) < 120.0:
+		path_indicator.hide()
+		return
+
+	var world_2d := playground.current_level.get_world_2d()
+	if not world_2d:
+		path_indicator.hide()
+		return
+
+	var map_rid := world_2d.get_navigation_map()
+	if not map_rid.is_valid():
+		path_indicator.hide()
+		return
+
+	var path := NavigationServer2D.map_get_path(map_rid, apprentice_pos, target_pos, true)
+	if path.size() <= 1:
+		path_indicator.hide()
+		return
+
+	var waypoint_pos := Vector2.ZERO
+	var found := false
+	for i in range(1, path.size()):
+		if apprentice_pos.distance_to(path[i]) > 50.0:
+			waypoint_pos = path[i]
+			found = true
+			break
+
+	if not found:
+		waypoint_pos = path[-1]
+
+	path_indicator.set_destination("Por aquí", waypoint_pos)
+	path_indicator.show()
 
 func _get_building_node(building_name: String) -> Node2D:
 	if not playground:
@@ -186,6 +290,10 @@ func _cleanup_tutorial() -> void:
 		indicator.hide()
 		indicator.queue_free()
 		indicator = null
+	if path_indicator:
+		path_indicator.hide()
+		path_indicator.queue_free()
+		path_indicator = null
 
 func is_dialogue_active() -> bool:
 	return dialogue_box != null and dialogue_box.is_active()

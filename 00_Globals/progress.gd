@@ -265,6 +265,28 @@ static func _add_virtue_points(progress: Dictionary, virtue: String, points: int
 	if virtues.has(virtue):
 		virtues[virtue] = mini(int(virtues[virtue]) + points, MAX_VIRTUE_POINTS)
 
+# ¿Está activada la música de fondo?
+static func is_music_enabled(progress: Dictionary = {}) -> bool:
+	if progress.is_empty():
+		progress = load_progress()
+	return bool(progress.get("music_enabled", true))
+
+# Cambia la preferencia de la música de fondo, la persiste y aplica el cambio de audio.
+static func set_music_enabled(enabled: bool) -> Dictionary:
+	var progress := load_progress()
+	progress["music_enabled"] = enabled
+	save_progress(progress)
+	apply_music_setting(enabled)
+	return progress
+
+# Aplica la configuración de audio al AudioServer según el valor de music_enabled.
+static func apply_music_setting(enabled: bool = true) -> void:
+	var bus_idx := AudioServer.get_bus_index("Music")
+	if bus_idx < 0:
+		bus_idx = AudioServer.get_bus_index("Master")
+	if bus_idx >= 0:
+		AudioServer.set_bus_mute(bus_idx, not enabled)
+
 static func _default_progress() -> Dictionary:
 	return {
 		"journal_entries": [],
@@ -277,6 +299,7 @@ static func _default_progress() -> Dictionary:
 		"draft": {"prompt_id": "", "content": ""},
 		"tutorial_step": "intro",
 		"tutorial_completed": false,
+		"music_enabled": true,
 	}
 
 # Completa los datos leídos con las claves que falten, para que una partida
@@ -304,6 +327,8 @@ static func _merge_defaults(data: Dictionary) -> Dictionary:
 		progress["tutorial_step"] = "intro"
 	if not data.has("tutorial_completed"):
 		progress["tutorial_completed"] = false
+	if not data.has("music_enabled"):
+		progress["music_enabled"] = true
 
 	return progress
 

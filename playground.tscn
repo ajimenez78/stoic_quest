@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cicq8ink45yyk" path="res://Tile Maps/athens.tscn" id="3_is3ju"]
 [ext_resource type="PackedScene" uid="uid://b1gv1herqkdfm" path="res://Zeno/zeno.tscn" id="3_m8u5f"]
 [ext_resource type="PackedScene" uid="uid://cxmvb56ylfjcv" path="res://Apprentice/apprentice.tscn" id="4_o00ia"]
+[ext_resource type="PackedScene" path="res://UI/Settings/settings_menu.tscn" id="5_settings"]
 
 [node name="Playground" type="Node2D" unique_id=2119422105 node_paths=PackedStringArray("current_level")]
 script = ExtResource("1_is3ju")
@@ -18,3 +19,5 @@ position = Vector2(0, 25)
 
 [node name="Zeno" parent="." unique_id=640111377 instance=ExtResource("3_m8u5f")]
 position = Vector2(349, 341)
+
+[node name="SettingsMenu" parent="." instance=ExtResource("5_settings")]

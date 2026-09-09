@@ -73,7 +73,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -170.0
+offset_top = -190.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/margin_left = 20
@@ -82,7 +82,7 @@ theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 16
 
 [node name="Panel" type="PanelContainer" parent="RootControl/BottomContainer"]
-custom_minimum_size = Vector2(0, 140)
+custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
 theme_override_styles/panel = SubResource("DialoguePanelStyle")
 
@@ -121,7 +121,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.48, 0.32, 0.12, 1)
 theme_override_fonts/font = SubResource("FontBold")
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 19
 text = "Zenón de Citio"
 
 [node name="TextLabel" type="RichTextLabel" parent="RootControl/BottomContainer/Panel/InnerMargin/HBox/ContentVBox"]
@@ -130,7 +130,8 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/default_color = Color(0.18, 0.15, 0.12, 1)
 theme_override_fonts/normal_font = ExtResource("3_font")
-theme_override_font_sizes/normal_font_size = 15
+theme_override_fonts/bold_font = SubResource("FontBold")
+theme_override_font_sizes/normal_font_size = 18
 bbcode_enabled = true
 text = "Bienvenido a Atenas, aprendiz."
 scroll_active = false
@@ -140,6 +141,6 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.545098, 0.45098, 0.333333, 0.8)
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 13
 text = "▼ Toca para continuar"
 horizontal_alignment = 2

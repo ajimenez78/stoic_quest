@@ -159,6 +159,7 @@ theme_override_constants/margin_bottom = 16
 
 [node name="MentorRichTextLabel" type="RichTextLabel" parent="UI/MarginContainer/ScrollContainer/VBoxContainer/MentorMessage/MarginContainer" unique_id=58101441]
 layout_mode = 2
+theme_override_colors/default_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_fonts/normal_font = ExtResource("5_font")
 bbcode_enabled = true
 text = "[color=black][b][font_size=24]Mensaje del Mentor[/font_size][/b]
@@ -203,6 +204,7 @@ stretch_mode = 5
 [node name="RichTextLabel" type="RichTextLabel" parent="UI/MarginContainer/ScrollContainer/VBoxContainer/VirtuesGrid/Templanza/MarginContainer/HBoxContainer" unique_id=320259800]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_fonts/normal_font = ExtResource("5_font")
 bbcode_enabled = true
 text = "[color=black][b][font_size=20]Templanza[/font_size][/b]
@@ -237,6 +239,7 @@ stretch_mode = 5
 [node name="RichTextLabel" type="RichTextLabel" parent="UI/MarginContainer/ScrollContainer/VBoxContainer/VirtuesGrid/Justicia/MarginContainer/HBoxContainer" unique_id=2134011515]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_fonts/normal_font = ExtResource("5_font")
 bbcode_enabled = true
 text = "[color=black][b][font_size=20]Justicia[/font_size][/b]
@@ -271,6 +274,7 @@ stretch_mode = 5
 [node name="RichTextLabel" type="RichTextLabel" parent="UI/MarginContainer/ScrollContainer/VBoxContainer/VirtuesGrid/Sabiduría/MarginContainer/HBoxContainer" unique_id=493652448]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_fonts/normal_font = ExtResource("5_font")
 bbcode_enabled = true
 text = "[color=black][b][font_size=20]Sabiduría[/font_size][/b]
@@ -305,6 +309,7 @@ stretch_mode = 5
 [node name="RichTextLabel" type="RichTextLabel" parent="UI/MarginContainer/ScrollContainer/VBoxContainer/VirtuesGrid/Coraje/MarginContainer/HBoxContainer" unique_id=1979701131]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_fonts/normal_font = ExtResource("5_font")
 bbcode_enabled = true
 text = "[color=black][b][font_size=20]Coraje[/font_size][/b]
@@ -329,6 +334,7 @@ theme_override_constants/separation = 8
 
 [node name="TitleRichTextLabel" type="RichTextLabel" parent="UI/MarginContainer/ScrollContainer/VBoxContainer/SabiduríaEstoica/MarginContainer/VBoxContainer" unique_id=247827980]
 layout_mode = 2
+theme_override_colors/default_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_fonts/normal_font = ExtResource("5_font")
 bbcode_enabled = true
 text = "[color=black][b][font_size=22]Sabiduría estoica[/font_size][/b][/color]"
@@ -337,6 +343,7 @@ fit_content = true
 [node name="QuoteRichTextLabel" type="RichTextLabel" parent="UI/MarginContainer/ScrollContainer/VBoxContainer/SabiduríaEstoica/MarginContainer/VBoxContainer" unique_id=1245985800]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/default_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_fonts/normal_font = ExtResource("5_font")
 bbcode_enabled = true
 text = "[font_size=18][i][color=black]\"No podemos controlar lo que nos sucede, pero sí cómo respondemos a ello\"[/color][/i][/font_size]"
@@ -350,6 +357,7 @@ alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0.545, 0.27, 0.07, 1)
 theme_override_fonts/normal_font = ExtResource("5_font")
 bbcode_enabled = true
 text = "[font_size=17][color=brown]- Epicteto[/color][/font_size]"

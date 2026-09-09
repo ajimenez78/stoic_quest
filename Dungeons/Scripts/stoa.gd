@@ -42,10 +42,11 @@ func _ready() -> void:
 
 	_update_responsive_layout()
 	get_viewport().size_changed.connect(_update_responsive_layout)
+	_apply_font_scale()
 	_on_next_pressed()
 
 func _init_font_scale_index() -> void:
-	var is_mobile_screen: bool = OS.has_feature("mobile") or get_viewport_rect().size.x < 600
+	var is_mobile_screen: bool = OS.has_feature("mobile") or DisplayServer.is_touchscreen_available() or get_viewport_rect().size.x < 600
 	if is_mobile_screen:
 		_current_scale_index = 3
 	else:

@@ -31,9 +31,23 @@ func _ready() -> void:
 		backdrop_button.pressed.connect(_on_backdrop_pressed)
 	
 	_cache_base_font_sizes(root_control as Node if root_control else self as Node)
-	_apply_font_scale()
+	_update_responsive_layout()
+	
+	if get_viewport():
+		get_viewport().size_changed.connect(_update_responsive_layout)
 	
 	hide_dialogue()
+
+func _update_responsive_layout() -> void:
+	if not is_inside_tree():
+		return
+	var is_mobile := OS.has_feature("mobile") or DisplayServer.is_touchscreen_available()
+	var viewport_size := get_viewport().get_visible_rect().size
+	if is_mobile or viewport_size.x < 768.0 or viewport_size.y < 600.0:
+		_current_scale_factor = 1.4
+	else:
+		_current_scale_factor = 1.0
+	_apply_font_scale()
 
 func _ensure_nodes() -> void:
 	if not root_control and has_node("%RootControl"):
@@ -153,17 +167,34 @@ func _cache_base_font_sizes(node: Node) -> void:
 	for child in node.get_children():
 		if child is Control:
 			if not _base_font_sizes.has(child):
-				var base_size := (child as Control).get_theme_font_size("font_size")
-				if base_size > 0:
-					_base_font_sizes[child] = base_size
+				if child is RichTextLabel:
+					var rtl := child as RichTextLabel
+					var normal_s := rtl.get_theme_font_size("normal_font_size")
+					var bold_s := rtl.get_theme_font_size("bold_font_size")
+					if normal_s <= 0:
+						normal_s = 18
+					if bold_s <= 0:
+						bold_s = 18
+					_base_font_sizes[child] = {"normal": normal_s, "bold": bold_s}
+				else:
+					var base_size := (child as Control).get_theme_font_size("font_size")
+					if base_size > 0:
+						_base_font_sizes[child] = base_size
 		_cache_base_font_sizes(child)
 
 func _apply_font_scale() -> void:
 	for control in _base_font_sizes.keys():
 		if is_instance_valid(control):
-			var base_size: int = _base_font_sizes[control]
-			var scaled_size := int(round(base_size * _current_scale_factor))
-			(control as Control).add_theme_font_size_override("font_size", scaled_size)
+			var val = _base_font_sizes[control]
+			if val is Dictionary and control is RichTextLabel:
+				var rtl := control as RichTextLabel
+				var normal_scaled := int(round(float(val.get("normal", 18)) * _current_scale_factor))
+				var bold_scaled := int(round(float(val.get("bold", 18)) * _current_scale_factor))
+				rtl.add_theme_font_size_override("normal_font_size", normal_scaled)
+				rtl.add_theme_font_size_override("bold_font_size", bold_scaled)
+			elif val is int or val is float:
+				var scaled_size := int(round(float(val) * _current_scale_factor))
+				(control as Control).add_theme_font_size_override("font_size", scaled_size)
 
 func _on_backdrop_pressed() -> void:
 	advance()

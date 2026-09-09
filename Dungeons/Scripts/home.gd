@@ -111,9 +111,10 @@ func _ready() -> void:
 
 	_update_responsive_layout()
 	get_viewport().size_changed.connect(_update_responsive_layout)
+	_apply_font_scale()
 
 func _init_font_scale_index() -> void:
-	var is_mobile_screen: bool = OS.has_feature("mobile") or get_viewport_rect().size.x < 600
+	var is_mobile_screen: bool = OS.has_feature("mobile") or DisplayServer.is_touchscreen_available() or get_viewport_rect().size.x < 600
 	if is_mobile_screen:
 		_current_scale_index = 3
 	else:
@@ -167,9 +168,19 @@ func _cache_base_font_sizes(node: Node) -> void:
 	for child in node.get_children():
 		if child is Control and child != font_decrease_button and child != font_increase_button and child != credits_button:
 			if not _base_font_sizes.has(child):
-				var base_size := (child as Control).get_theme_font_size("font_size")
-				if base_size > 0:
-					_base_font_sizes[child] = base_size
+				if child is RichTextLabel:
+					var rtl := child as RichTextLabel
+					var normal_s := rtl.get_theme_font_size("normal_font_size")
+					var bold_s := rtl.get_theme_font_size("bold_font_size")
+					if normal_s <= 0:
+						normal_s = 13
+					if bold_s <= 0:
+						bold_s = 13
+					_base_font_sizes[child] = {"normal": normal_s, "bold": bold_s}
+				else:
+					var base_size := (child as Control).get_theme_font_size("font_size")
+					if base_size > 0:
+						_base_font_sizes[child] = base_size
 		_cache_base_font_sizes(child)
 
 func _on_credits_pressed() -> void:
@@ -214,9 +225,16 @@ func _apply_font_scale() -> void:
 
 	for control in _base_font_sizes.keys():
 		if is_instance_valid(control):
-			var base_size: int = _base_font_sizes[control]
-			var scaled_size := int(round(base_size * scale_factor))
-			(control as Control).add_theme_font_size_override("font_size", scaled_size)
+			var val = _base_font_sizes[control]
+			if val is Dictionary and control is RichTextLabel:
+				var rtl := control as RichTextLabel
+				var normal_scaled := int(round(float(val.get("normal", 13)) * scale_factor))
+				var bold_scaled := int(round(float(val.get("bold", 13)) * scale_factor))
+				rtl.add_theme_font_size_override("normal_font_size", normal_scaled)
+				rtl.add_theme_font_size_override("bold_font_size", bold_scaled)
+			elif val is int or val is float:
+				var scaled_size := int(round(float(val) * scale_factor))
+				(control as Control).add_theme_font_size_override("font_size", scaled_size)
 
 	if prompt_grid:
 		for card in prompt_grid.get_children():
